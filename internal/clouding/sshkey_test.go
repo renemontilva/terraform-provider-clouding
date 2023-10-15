@@ -14,7 +14,7 @@ func TestGetSshKeyID(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`
+		_, err := w.Write([]byte(`
 		{
 			"id": "Dd8v0nXJ1924rayY",
 			"name": "my-ssh-key-without-private-key",
@@ -23,6 +23,9 @@ func TestGetSshKeyID(t *testing.T) {
 			"hasPrivateKey": false
 		}
 		`))
+		if err != nil {
+			t.Errorf("error writing response: %s", err)
+		}
 	}))
 
 	client, err := NewAPI("token123", WithEndpoint(server.URL))
@@ -48,7 +51,7 @@ func TestCreateSshKey(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte(`
+		_, err := w.Write([]byte(`
 		{
 			"id": "Dd8v0nXJ1924rayY",
 			"name": "my-ssh-key-without-private-key",
@@ -57,6 +60,9 @@ func TestCreateSshKey(t *testing.T) {
 			"hasPrivateKey": false
 		}
 		`))
+		if err != nil {
+			t.Errorf("error writing response: %s", err)
+		}
 	}))
 
 	client, err := NewAPI("token123", WithEndpoint(server.URL))

@@ -36,7 +36,10 @@ func (a *API) GetSnapshotID(id string) (Snapshot, error) {
 	}
 	if response.StatusCode != http.StatusOK {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return snapshot, fmt.Errorf("error decoding error response: %s", err)
+		}
 		return snapshot, fmt.Errorf("error getting snapshot, status code: %d, title: %s", errorResponse.Status, errorResponse.Title)
 	}
 

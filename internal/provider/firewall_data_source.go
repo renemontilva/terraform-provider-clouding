@@ -170,8 +170,8 @@ func (d *FirewallDataSource) Read(ctx context.Context, req datasource.ReadReques
 			Id:           types.StringValue(rule.ID),
 			Description:  types.StringValue(rule.Description),
 			Protocol:     types.StringValue(rule.Protocol),
-			PortRangeMin: types.Int64Value(int64(rule.PortRangeMin)),
-			PortRangeMax: types.Int64Value(int64(rule.PortRangeMax)),
+			PortRangeMin: types.Int64Value(rule.PortRangeMin),
+			PortRangeMax: types.Int64Value(rule.PortRangeMax),
 			SourceIP:     types.StringValue(rule.SourceIP),
 			Enable:       types.BoolValue(rule.Enabled),
 		}

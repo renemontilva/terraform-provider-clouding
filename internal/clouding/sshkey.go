@@ -29,7 +29,10 @@ func (a *API) GetSshKeyID(id string) (SshKey, error) {
 
 	if response.StatusCode != http.StatusOK {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return sshKey, fmt.Errorf("error decoding error response: %s", err)
+		}
 		return sshKey, fmt.Errorf("error getting sshkey, status code: %d, title: %s", errorResponse.Status, errorResponse.Title)
 	}
 
@@ -55,11 +58,17 @@ func (a *API) CreateSshKey(sshKey *SshKey) error {
 
 	if response.StatusCode != http.StatusCreated {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return fmt.Errorf("error decoding error response: %s", err)
+		}
 		return fmt.Errorf("error creating sshkey, status code: %d, title: %s", errorResponse.Status, errorResponse.Title)
 	}
 
-	json.NewDecoder(response.Body).Decode(sshKey)
+	err = json.NewDecoder(response.Body).Decode(sshKey)
+	if err != nil {
+		return fmt.Errorf("error decoding sshkey: %s", err)
+	}
 	return nil
 }
 
@@ -72,7 +81,10 @@ func (a *API) DeleteSshKey(id string) error {
 
 	if response.StatusCode != http.StatusNoContent {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return fmt.Errorf("error decoding error response: %s", err)
+		}
 		return fmt.Errorf("error deleting sshkey, status code: %d, title: %s", errorResponse.Status, errorResponse.Title)
 	}
 

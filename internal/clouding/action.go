@@ -19,7 +19,6 @@ type Action struct {
 }
 
 const (
-	// Action
 	ACTION_PATH = "actions"
 	PENDING     = "pending"
 	PROCESSING  = "inProgress"
@@ -38,11 +37,18 @@ func (a *API) GetAction(id string) (Action, error) {
 
 	if response.StatusCode != http.StatusOK {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return action, fmt.Errorf("error getting action: %s", err)
+		}
 		return action, fmt.Errorf("error getting action: %s", errorResponse.Detail)
 	}
 
-	json.NewDecoder(response.Body).Decode(&action)
+	err = json.NewDecoder(response.Body).Decode(&action)
+	if err != nil {
+		return action, fmt.Errorf("error getting action: %s", err)
+	}
+
 	return action, nil
 }
 

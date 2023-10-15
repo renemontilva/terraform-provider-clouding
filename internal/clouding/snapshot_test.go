@@ -14,7 +14,7 @@ func TestGetSnapShotID(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`
+		_, err := w.Write([]byte(`
 		{
 			"id": "jDGPRJXLpGXeV5M1",
 			"sizeGb": 15,
@@ -36,6 +36,9 @@ func TestGetSnapShotID(t *testing.T) {
 			}
 		  }
 		`))
+		if err != nil {
+			t.Errorf("error writing response: %s", err)
+		}
 	}))
 
 	client, err := NewAPI("token123", WithEndpoint(server.URL))

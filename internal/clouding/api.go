@@ -7,7 +7,6 @@ import (
 )
 
 const (
-	// Server
 	ENDPOINT = "https://api.clouding.io"
 	VERSION  = "v1"
 )

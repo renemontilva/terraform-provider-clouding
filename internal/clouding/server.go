@@ -7,7 +7,6 @@ import (
 )
 
 const (
-	// Server
 	SERVER_PATH = "servers"
 )
 
@@ -82,11 +81,17 @@ func (a *API) GetServerID(server *Server) error {
 
 	if response.StatusCode != http.StatusOK {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return fmt.Errorf("error decoding error response: %s", err)
+		}
 		return fmt.Errorf("error getting server: %s", errorResponse.Detail)
 	}
 
-	json.NewDecoder(response.Body).Decode(&server)
+	err = json.NewDecoder(response.Body).Decode(&server)
+	if err != nil {
+		return fmt.Errorf("error decoding server: %s", err)
+	}
 	server.FlavorID = server.Flavor
 	server.FirewallID = server.Firewalls[0].ID
 	if server.Volume != nil {
@@ -112,12 +117,18 @@ func (a *API) CreateServer(server *Server) error {
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusAccepted {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return fmt.Errorf("error decoding error response: %s", err)
+		}
 		return fmt.Errorf("error creating server, status code: %d, title: %s, detail: %s", errorResponse.Status, errorResponse.Title, errorResponse.Detail)
 
 	}
 
-	json.NewDecoder(response.Body).Decode(&serverResponse)
+	err = json.NewDecoder(response.Body).Decode(&serverResponse)
+	if err != nil {
+		return fmt.Errorf("error decoding server: %s", err)
+	}
 
 	server.ID = serverResponse.ID
 	server.AccessConfiguration.SshKeyID = serverResponse.RequestedAccessConfiguration.SshKeyID
@@ -138,7 +149,10 @@ func (a *API) DeleteServer(id string) (Action, error) {
 
 	if response.StatusCode != http.StatusAccepted {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return action, fmt.Errorf("error decoding error response: %s", err)
+		}
 		return action, fmt.Errorf("error deleting server, status code: %d, title: %s", errorResponse.Status, errorResponse.Title)
 	}
 
@@ -166,7 +180,10 @@ func (a *API) UpdateServerName(id, name string) error {
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusNoContent {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return fmt.Errorf("error decoding error response: %s", err)
+		}
 		return fmt.Errorf("error updating server name, status code: %d, title: %s", errorResponse.Status, errorResponse.Title)
 	}
 

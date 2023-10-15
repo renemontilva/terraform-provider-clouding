@@ -29,7 +29,10 @@ func (a *API) GetBackupID(id string) (Backup, error) {
 	}
 	if response.StatusCode != http.StatusOK {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return backup, fmt.Errorf("error decoding error response: %s", err)
+		}
 		return backup, fmt.Errorf("error getting backup, status code: %d, title: %s", errorResponse.Status, errorResponse.Title)
 	}
 

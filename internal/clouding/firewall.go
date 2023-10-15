@@ -7,7 +7,6 @@ import (
 )
 
 const (
-	// Firewall
 	FIREWALL_PATH = "firewalls"
 )
 
@@ -53,11 +52,17 @@ func (a *API) GetFirewallID(id string) (Firewall, error) {
 
 	if response.StatusCode != http.StatusOK {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return firewall, fmt.Errorf("error decoding error response: %s", err)
+		}
 		return firewall, fmt.Errorf("error getting firewall: %s", errorResponse.Title)
 	}
 
-	json.NewDecoder(response.Body).Decode(&firewall)
+	err = json.NewDecoder(response.Body).Decode(&firewall)
+	if err != nil {
+		return firewall, fmt.Errorf("error decoding firewall: %s", err)
+	}
 
 	return firewall, nil
 }
@@ -76,11 +81,18 @@ func (a *API) CreateFirewall(firewall *Firewall) error {
 
 	if response.StatusCode != http.StatusCreated {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return fmt.Errorf("error decoding error response: %s", err)
+		}
 		return fmt.Errorf("error creating firewall, status code: %d, title: %s", errorResponse.Status, errorResponse.Title)
 
 	}
-	json.NewDecoder(response.Body).Decode(&firewall)
+	err = json.NewDecoder(response.Body).Decode(&firewall)
+	if err != nil {
+		return fmt.Errorf("error decoding firewall: %s", err)
+	}
+
 	return nil
 }
 
@@ -97,7 +109,10 @@ func (a *API) UpdateFirewall(id string, firewall Firewall) error {
 
 	if response.StatusCode != http.StatusNoContent {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return fmt.Errorf("error decoding error response: %s", err)
+		}
 		return fmt.Errorf("error updating firewall, status code: %d, title: %s", errorResponse.Status, errorResponse.Title)
 	}
 
@@ -113,7 +128,10 @@ func (a *API) DeleteFirewall(id string) error {
 
 	if response.StatusCode != http.StatusNoContent {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return fmt.Errorf("error decoding error response: %s", err)
+		}
 		return fmt.Errorf("error deleting firewall, status code: %d, title: %s", errorResponse.Status, errorResponse.Title)
 	}
 
@@ -130,7 +148,10 @@ func (a *API) GetFirewallRule(id string) (FirewallRuleID, error) {
 
 	if response.StatusCode != http.StatusOK {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return firewallRuleID, fmt.Errorf("error decoding error response: %s", err)
+		}
 		return firewallRuleID, fmt.Errorf("error getting firewall rule, status code: %d, title: %s", errorResponse.Status, errorResponse.Title)
 	}
 	err = json.NewDecoder(response.Body).Decode(&firewallRuleID)
@@ -154,7 +175,10 @@ func (a *API) CreateFirewallRule(rule *FirewallRuleID) error {
 
 	if response.StatusCode != http.StatusCreated {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return fmt.Errorf("error decoding error response: %s", err)
+		}
 		return fmt.Errorf("error creating firewall rule, status code: %d, title: %s", errorResponse.Status, errorResponse.Title)
 	}
 	err = json.NewDecoder(response.Body).Decode(&rule.FirewallRule)
@@ -173,9 +197,11 @@ func (a *API) DeleteFirewallRule(id string) error {
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusNoContent {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return fmt.Errorf("error decoding error response: %s", err)
+		}
 		return fmt.Errorf("error deleting firewall rule, status code: %d, title: %s", errorResponse.Status, errorResponse.Title)
 	}
 	return nil
-
 }

@@ -15,7 +15,7 @@ func TestGetFirewallID(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{
+		_, err := w.Write([]byte(`{
 			  "id": "LywOkvx5LWAp28NP",
 			  "name": "Allow all private traffic",
 			  "description": "Allow traffic from all private subnets",
@@ -55,6 +55,9 @@ func TestGetFirewallID(t *testing.T) {
 			    }
 			  ]
 			}`))
+		if err != nil {
+			t.Errorf("error writing response: %s", err)
+		}
 
 	}))
 	client, err := NewAPI("token123", WithEndpoint(server.URL))
@@ -76,7 +79,7 @@ func TestCreateFirewall(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte(`
+		_, err := w.Write([]byte(`
 			{
   				"id": "ZPlL0kxDYQ9Q3Yb5",
   				"name": "My firewall",
@@ -85,6 +88,9 @@ func TestCreateFirewall(t *testing.T) {
   				"attachments": []
 			}
 		`))
+		if err != nil {
+			t.Errorf("error writing response: %s", err)
+		}
 	}))
 
 	client, err := NewAPI("token123", WithEndpoint(server.URL))
@@ -110,7 +116,10 @@ func TestUpdateFirewall(t *testing.T) {
 		var firewall Firewall
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusNoContent)
-		json.NewDecoder(r.Body).Decode(&firewall)
+		err := json.NewDecoder(r.Body).Decode(&firewall)
+		if err != nil {
+			t.Errorf("error decoding firewall: %s", err)
+		}
 		assert.Equal(t, "the-new-name", firewall.NewName)
 		assert.Equal(t, "The new description of the firewall", firewall.NewDescription)
 	}))
@@ -134,7 +143,7 @@ func TestUpdateFirewallWithError(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/problem+json")
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`
+		_, err := w.Write([]byte(`
 			{
   				"title": "One or more validation errors occurred.",
   				"status": 400,
@@ -151,6 +160,9 @@ func TestUpdateFirewallWithError(t *testing.T) {
   				]
 			}
 		`))
+		if err != nil {
+			t.Errorf("error writing response: %s", err)
+		}
 	}))
 
 	client, err := NewAPI("token123", WithEndpoint(server.URL))
@@ -189,7 +201,7 @@ func TestDeleteFirewallWithError(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/problem+json")
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`
+		_, err := w.Write([]byte(`
 		{
   			"title": "One or more validation errors occurred.",
   			"status": 400,
@@ -205,6 +217,9 @@ func TestDeleteFirewallWithError(t *testing.T) {
   			  }
   			]
 		}`))
+		if err != nil {
+			t.Errorf("error writing response: %s", err)
+		}
 	}))
 
 	client, err := NewAPI("token123", WithEndpoint(server.URL))
@@ -222,7 +237,7 @@ func TestGetFirewallRule(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`
+		_, err := w.Write([]byte(`
 		{
   			"firewallRule": {
   			  "id": "2OM84qx6aWdz7JGr",
@@ -236,6 +251,9 @@ func TestGetFirewallRule(t *testing.T) {
   			"firewallId": "m1LrZ3W8exDzN60o"
 		}	
 		`))
+		if err != nil {
+			t.Errorf("error writing response: %s", err)
+		}
 	}))
 
 	client, err := NewAPI("token123", WithEndpoint(server.URL))
@@ -259,13 +277,19 @@ func TestCreateFirewallRule(t *testing.T) {
 		var firewallRule FirewallRule
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		json.NewDecoder(r.Body).Decode(&firewallRule)
+		err := json.NewDecoder(r.Body).Decode(&firewallRule)
+		if err != nil {
+			t.Errorf("error decoding firewallRule: %s", err)
+		}
 		assert.Equal(t, "10.0.0.0/8", firewallRule.SourceIP)
-		w.Write([]byte(`
+		_, err = w.Write([]byte(`
 		{
 			"id": "eAMVoaXqP9BLJwR6"
 		}
 		`))
+		if err != nil {
+			t.Errorf("error writing response: %s", err)
+		}
 	}))
 
 	client, err := NewAPI("token123", WithEndpoint(server.URL))

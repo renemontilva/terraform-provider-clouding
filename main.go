@@ -39,14 +39,6 @@ func main() {
 	flag.Parse()
 
 	// ServeOpts contains options for serving the Terraform Clouding provider.
-	type ServeOpts struct {
-		// Address is the address of the provider registry.
-		Address string
-
-		// Debug enables debug logging.
-		Debug bool
-	}
-
 	opts := providerserver.ServeOpts{
 		Address: "registry.terraform.io/renemontilva/clouding",
 		Debug:   debug,

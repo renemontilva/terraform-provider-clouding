@@ -12,7 +12,7 @@ func TestGetImageID(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`
+		_, err := w.Write([]byte(`
 		{
   			"id": "d3mKbx4zd3XEQaqP",
   			"name": "Quantum Nova OS (English 64Bit)",
@@ -26,6 +26,9 @@ func TestGetImageID(t *testing.T) {
   			"billingUnit": "Core"
 		}
 		`))
+		if err != nil {
+			t.Errorf("error writing response: %s", err)
+		}
 	}))
 	client, err := NewAPI("token123", WithEndpoint(server.URL))
 	if err != nil {
@@ -44,5 +47,4 @@ func TestGetImageID(t *testing.T) {
 	assert.Equal(t, 0.00684, image.PricePerHour)
 	assert.Equal(t, 4.9932, image.PricePerMonthApprox)
 	assert.Equal(t, "Core", image.BillingUnit)
-
 }

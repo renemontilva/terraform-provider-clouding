@@ -7,7 +7,6 @@ import (
 )
 
 const (
-	// Image
 	IMAGE_PATH = "images"
 )
 
@@ -37,10 +36,16 @@ func (a *API) GetImageID(id string) (Image, error) {
 
 	if response.StatusCode != http.StatusOK {
 		var errorResponse ErrorResponse
-		json.NewDecoder(response.Body).Decode(&errorResponse)
+		err = json.NewDecoder(response.Body).Decode(&errorResponse)
+		if err != nil {
+			return image, fmt.Errorf("error decoding error response: %s", err)
+		}
 		return image, fmt.Errorf("error getting image: %s", errorResponse.Detail)
 	}
 
-	json.NewDecoder(response.Body).Decode(&image)
+	err = json.NewDecoder(response.Body).Decode(&image)
+	if err != nil {
+		return image, fmt.Errorf("error decoding image: %s", err)
+	}
 	return image, nil
 }

@@ -13,7 +13,7 @@ func TestGetServerID(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`
+		_, err := w.Write([]byte(`
 			{
 			  "id": "ke8vlrXPjxO1oq3m",
 			  "name": "database-server",
@@ -80,6 +80,9 @@ func TestGetServerID(t *testing.T) {
 			  }
 			}	
 		`))
+		if err != nil {
+			t.Errorf("error writing response: %s", err)
+		}
 	}))
 
 	client, err := NewAPI("token123", WithEndpoint(srv.URL))
@@ -151,7 +154,7 @@ func TestCreateServer(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusAccepted)
-		w.Write([]byte(`
+		_, err := w.Write([]byte(`
 			{
   				"id": "Q7y1OZWlknXmk6l3",
   				"name": "my server",
@@ -188,6 +191,9 @@ func TestCreateServer(t *testing.T) {
   				}
 			}
 		`))
+		if err != nil {
+			t.Errorf("error writing response: %s", err)
+		}
 	}))
 
 	client, err := NewAPI("token123", WithEndpoint(srv.URL))
@@ -243,7 +249,7 @@ func TestDeleteServer(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusAccepted)
-		w.Write([]byte(`
+		_, err := w.Write([]byte(`
 		{
 		  "id": "mR2Dn6xgLD9OMPyE",
 		  "status": "inProgress",
@@ -254,6 +260,9 @@ func TestDeleteServer(t *testing.T) {
 		  "resourceType": "server"
 		}
 		`))
+		if err != nil {
+			t.Errorf("error writing response: %s", err)
+		}
 	}))
 
 	client, err := NewAPI("token123", WithEndpoint(srv.URL))

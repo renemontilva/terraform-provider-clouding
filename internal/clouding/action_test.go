@@ -13,7 +13,7 @@ func TestGetActionID(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{
+		_, err := w.Write([]byte(`{
 			"id": "N3V2ryXQjWa6pvok",
 			"status": "completed",
 			"type": "delete",
@@ -22,6 +22,9 @@ func TestGetActionID(t *testing.T) {
 			"resourceId": "m1LrZ3W8exDzN60o",
 			"resourceType": "server"
 		}`))
+		if err != nil {
+			t.Errorf("error writing response: %s", err)
+		}
 	}))
 
 	client, err := NewAPI("token123", WithEndpoint(server.URL))

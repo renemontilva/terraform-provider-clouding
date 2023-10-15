@@ -14,7 +14,7 @@ func TestGetBackupID(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`
+		_, err := w.Write([]byte(`
 		{
 		  "id": "86EAL1xB769Z4q2w",
 		  "createdAt": "2023-01-01T12:00:00.0000000Z",
@@ -31,6 +31,9 @@ func TestGetBackupID(t *testing.T) {
 		  }
 		}
 		`))
+		if err != nil {
+			t.Errorf("error writing response: %s", err)
+		}
 	}))
 
 	client, err := NewAPI("token123", WithEndpoint(server.URL))
