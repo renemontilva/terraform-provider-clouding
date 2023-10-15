@@ -17,13 +17,13 @@ type API struct {
 }
 
 type ErrorResponse struct {
-	Type     string   `json:"type"`
-	Title    string   `json:"title"`
-	Status   int      `json:"status"`
-	Detail   string   `json:"detail,omitempty"`
-	Instance string   `json:"instance,omitempty"`
-	TraceID  string   `json:"traceId,omitempty"`
-	Errors   []string `json:"errors,omitempty"`
+	Type     string                `json:"type"`
+	Title    string                `json:"title"`
+	Status   int                   `json:"status"`
+	Detail   string                `json:"detail,omitempty"`
+	Instance string                `json:"instance,omitempty"`
+	TraceID  string                `json:"traceId,omitempty"`
+	Errors   []map[string][]string `json:"errors,omitempty"`
 }
 
 type option func(*API) error

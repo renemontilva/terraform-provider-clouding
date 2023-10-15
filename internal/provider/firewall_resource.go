@@ -104,7 +104,7 @@ func (r *FirewallResource) Create(ctx context.Context, req resource.CreateReques
 	}
 	err := r.client.CreateFirewall(&firewall)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create example, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create firewall resource, got error: %s", err))
 		return
 	}
 

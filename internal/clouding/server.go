@@ -15,7 +15,7 @@ type Server struct {
 	Name                          string               `json:"name,omitempty"`
 	NewServerName                 string               `json:"newServerName,omitempty"`
 	Hostname                      string               `json:"hostname,omitempty"`
-	VCores                        int                  `json:"vCores,omitempty"`
+	VCores                        float64              `json:"vCores,omitempty"`
 	RamGb                         int                  `json:"ramGb,omitempty"`
 	FlavorID                      string               `json:"flavorId,omitempty"`
 	Flavor                        string               `json:"flavor,omitempty"`

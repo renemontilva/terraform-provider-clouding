@@ -112,7 +112,7 @@ func TestGetServerID(t *testing.T) {
 	assert.Equal(t, "ke8vlrXPjxO1oq3m", server.ID)
 	assert.Equal(t, "database-server", server.Name)
 	assert.Equal(t, "db.example.com", server.Hostname)
-	assert.Equal(t, 1, server.VCores)
+	assert.Equal(t, float64(1), server.VCores)
 	assert.Equal(t, 4, server.RamGb)
 	assert.Equal(t, "1x4", server.Flavor)
 	assert.Equal(t, int64(15), server.VolumeSizeGb)
